@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.TrainMeApp" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.TrainMeApp" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:windowBackground">@color/top_bar</item>
+        <item name="android:windowTranslucentStatus">false</item>
+    </style>
 </resources>
