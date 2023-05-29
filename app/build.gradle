@@ -98,4 +98,6 @@ dependencies {
     ksp "androidx.room:room-compiler:$room_version"
 
     implementation 'androidx.compose.material3:material3:1.0.0-alpha11'
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
+    implementation("androidx.work:work-runtime-ktx:$worker_version")
 }
