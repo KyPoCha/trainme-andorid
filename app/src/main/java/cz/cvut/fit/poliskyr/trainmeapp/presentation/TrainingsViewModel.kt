@@ -171,8 +171,10 @@ class TrainingsViewModel @Inject constructor(
         val time = trainingRequest.timeFrom.split("T")[1].slice(0..4)
         val builder = NotificationCompat.Builder(appContext, "CHANNEL_ID")
             .setSmallIcon(R.drawable.logo)
-            .setContentTitle("New training made")
-            .setContentText("Your new training will start at $date in $time o'Clock")
+            .setContentTitle("New training was made")
+            .setStyle(NotificationCompat.InboxStyle()
+                .addLine("Your new training will start at $date")
+                .addLine("Starting time - $time"))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
         with(NotificationManagerCompat.from(appContext)) {
             if (ActivityCompat.checkSelfPermission(
