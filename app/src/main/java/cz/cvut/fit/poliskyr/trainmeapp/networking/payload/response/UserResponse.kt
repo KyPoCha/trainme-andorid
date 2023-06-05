@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 data class UserResponse(
     val id: Int,
     val username: String,
-    val dateOfBirthday: String,
-    val membershipFrom: String,
-    val membershipTo: String,
+    val dateOfBirthday: String?,
+    val membershipFrom: String?,
+    val membershipTo: String?,
     val memberships: List<String>
 )

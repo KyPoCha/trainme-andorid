@@ -1,5 +1,6 @@
 package cz.cvut.fit.poliskyr.trainmeapp.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -146,6 +147,7 @@ fun AuthScreen(navController: NavController, authViewModel: AuthViewModel) {
             Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                 Button(
                     onClick = {
+                        Log.d("LOGIN INFO", username.value)
                         authViewModel.signIn(
                             signInRequest = SignInRequest(
                                 username.value,
@@ -162,6 +164,7 @@ fun AuthScreen(navController: NavController, authViewModel: AuthViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
+                        .padding(start = 5.dp, end = 5.dp)
                 ) {
                     Text(text = stringResource(id = R.string.login))
                 }
@@ -397,6 +400,7 @@ fun SignUpDialogWindow(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 36.dp, start = 36.dp, end = 36.dp, bottom = 8.dp),
+                    shape = RoundedCornerShape(50.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Warning),
                     onClick = {
                         val validator = Validator()
@@ -431,9 +435,6 @@ fun SignUpDialogWindow(
                     }) {
                     Text(
                         text = stringResource(id = R.string.sign_up_now),
-                        style = TextStyle(
-                            fontSize = 16.sp
-                        )
                     )
                 }
 

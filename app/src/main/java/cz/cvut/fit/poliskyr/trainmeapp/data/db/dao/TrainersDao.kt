@@ -1,4 +1,4 @@
-package cz.cvut.fit.poliskyr.trainmeapp.data.db
+package cz.cvut.fit.poliskyr.trainmeapp.data.db.dao
 
 import androidx.room.*
 import cz.cvut.fit.poliskyr.trainmeapp.model.Trainer

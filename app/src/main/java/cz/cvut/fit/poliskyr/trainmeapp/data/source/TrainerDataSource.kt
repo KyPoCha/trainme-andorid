@@ -9,21 +9,32 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import javax.inject.Inject
 
-const val LOCAL_HOST = "http://10.0.2.2:8080/api/"
+//const val LOCAL_HOST = "http://10.0.2.2:8080/api/"
+const val LOCAL_HOST = "http://192.168.0.227:8080/api/"
 
-object TrainerDataSource {
-    private val json = Json { ignoreUnknownKeys = true }
+class TrainerDataSource @Inject constructor(private val apiInterceptor: ApiInterceptor) {
+    private val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
 
     @OptIn(ExperimentalSerializationApi::class)
     private val apiDescription: TrainersApiDescription = Retrofit.Builder()
         .baseUrl(LOCAL_HOST)
         .client(
-            OkHttpClient.Builder().addInterceptor(ApiInterceptor(AuthDataSource.getToken())).build()
+           createOkHttpClient(apiInterceptor)
         )
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()
         .create(TrainersApiDescription::class.java)
+
+    private fun createOkHttpClient(apiInterceptor: ApiInterceptor): OkHttpClient {
+        val clientBuilder = OkHttpClient.Builder()
+            .addInterceptor(apiInterceptor)
+        return clientBuilder.build()
+    }
 
     suspend fun getTrainers() : List<Trainer> {
         trainers.clear()

@@ -18,5 +18,5 @@ data class Trainer (
     @ColumnInfo(name = "priceForOneTraining") val priceForOneTraining: String = "",
     @ColumnInfo(name = "priceForMonthTraining") val priceForMonthTraining: String = "",
     @ColumnInfo(name = "dateOfBirthday") val dateOfBirthday: String = "",
-    @ColumnInfo(name = "image") var image: Bitmap? = null,
+    @ColumnInfo(name = "image") var image: String? = null,
 )

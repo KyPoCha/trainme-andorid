@@ -15,10 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import cz.cvut.fit.poliskyr.trainmeapp.components.Drawer
-import cz.cvut.fit.poliskyr.trainmeapp.presentation.AuthViewModel
-import cz.cvut.fit.poliskyr.trainmeapp.presentation.MainViewModel
-import cz.cvut.fit.poliskyr.trainmeapp.presentation.TrainersViewModel
-import cz.cvut.fit.poliskyr.trainmeapp.presentation.TrainingsViewModel
+import cz.cvut.fit.poliskyr.trainmeapp.presentation.*
 import cz.cvut.fit.poliskyr.trainmeapp.screen.*
 import cz.cvut.fit.poliskyr.trainmeapp.ui.theme.Background
 import cz.cvut.fit.poliskyr.trainmeapp.ui.theme.Warning
@@ -28,7 +25,7 @@ import kotlinx.coroutines.launch
 fun Navigation(
     trainersViewModel: TrainersViewModel,
     trainingsViewModel: TrainingsViewModel,
-    mainViewModel: MainViewModel,
+    userViewModel: UserViewModel,
     authViewModel: AuthViewModel
 ) {
     val navController = rememberNavController()
@@ -53,7 +50,8 @@ fun Navigation(
                         navController.navigate(route) {
                             launchSingleTop = true
                         }
-                    }
+                    },
+                    userViewModel = userViewModel
                 )
             }
         ) {

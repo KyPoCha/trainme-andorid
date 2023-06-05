@@ -4,36 +4,46 @@ import androidx.compose.runtime.mutableStateOf
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import cz.cvut.fit.poliskyr.trainmeapp.model.User
 import cz.cvut.fit.poliskyr.trainmeapp.networking.ApiInterceptor
-import cz.cvut.fit.poliskyr.trainmeapp.networking.api.TrainingsApiDescription
 import cz.cvut.fit.poliskyr.trainmeapp.networking.api.UserApiDescription
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import javax.inject.Inject
 
-object UserDataSource {
-    private val json = Json { ignoreUnknownKeys = true }
+class UserDataSource @Inject constructor(private val apiInterceptor: ApiInterceptor) {
+
+    private val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
 
     @OptIn(ExperimentalSerializationApi::class)
     private val apiDescription: UserApiDescription = Retrofit.Builder()
         .baseUrl(LOCAL_HOST)
         .client(
-            OkHttpClient.Builder().addInterceptor(ApiInterceptor(AuthDataSource.getToken())).build()
+            createOkHttpClient(apiInterceptor)
         )
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()
         .create(UserApiDescription::class.java)
 
-    suspend fun getUser(): User{
+    private fun createOkHttpClient(apiInterceptor: ApiInterceptor): OkHttpClient {
+        val clientBuilder = OkHttpClient.Builder()
+            .addInterceptor(apiInterceptor)
+        return clientBuilder.build()
+    }
+
+    suspend fun getUser(): User {
         val response = apiDescription.getUserInfo()
         user.value = User(
-            response.id,
-            response.username,
-            response.dateOfBirthday,
-            response.membershipFrom,
-            response.membershipTo,
-            response.memberships
+            id = response.id,
+            username = response.username,
+            dateOfBirthday = response.dateOfBirthday,
+            membershipFrom = response.membershipFrom,
+            membershipTo = response.membershipTo,
+            memberships = response.memberships
         )
         return user.value
     }

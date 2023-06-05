@@ -5,9 +5,11 @@ import android.app.TimePickerDialog
 import android.widget.DatePicker
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.icons.Icons
@@ -41,7 +43,7 @@ import cz.cvut.fit.poliskyr.trainmeapp.screen.EmptyScreen as EmptyScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrainingsScreen(navController: NavController, openDrawer: () -> Unit, trainingsViewModel: TrainingsViewModel){
-    val trainers by trainingsViewModel.trainers.collectAsState()
+    val trainers by trainingsViewModel.trainers.collectAsState(mutableListOf())
     val trainings by trainingsViewModel.trainings.collectAsState()
 
     val screenState by trainingsViewModel.screenState.collectAsState()
@@ -221,8 +223,7 @@ fun TableTrainings(
     snackbarHostState: SnackbarHostState,
     screenState: Boolean
 ){
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(1),
+    LazyColumn(
         modifier = Modifier
             .background(Color.Transparent)
             .fillMaxWidth(),
@@ -281,7 +282,7 @@ fun TrainingCard(training: Training, onDelete: () -> Unit){
                     .fillMaxWidth(),
             ) {
                 TrainingTimeColumn(date, timeStart, timeEnd)
-                Spacer(modifier = Modifier.width(110.dp))
+                Spacer(modifier = Modifier.width(50.dp))
                 TrainingMainColumn(trainerUsername = training.trainerUsername, status = status, onDelete = onDelete)
             }
         }

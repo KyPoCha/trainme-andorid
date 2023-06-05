@@ -3,31 +3,46 @@ package cz.cvut.fit.poliskyr.trainmeapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import cz.cvut.fit.poliskyr.trainmeapp.data.db.TrainersRepository
+import androidx.work.BackoffPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import cz.cvut.fit.poliskyr.trainmeapp.data.db.repository.TrainersRepository
+import cz.cvut.fit.poliskyr.trainmeapp.data.db.repository.TrainingsRepository
 import cz.cvut.fit.poliskyr.trainmeapp.navigation.Navigation
-import cz.cvut.fit.poliskyr.trainmeapp.presentation.AuthViewModel
-import cz.cvut.fit.poliskyr.trainmeapp.presentation.MainViewModel
-import cz.cvut.fit.poliskyr.trainmeapp.presentation.TrainersViewModel
-import cz.cvut.fit.poliskyr.trainmeapp.presentation.TrainingsViewModel
+import cz.cvut.fit.poliskyr.trainmeapp.presentation.*
 import cz.cvut.fit.poliskyr.trainmeapp.ui.theme.TrainMeAppTheme
+import cz.cvut.fit.poliskyr.trainmeapp.workers.data.ApiSyncWorker
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Duration
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject lateinit var trainersRepository: TrainersRepository
-    private val trainersViewModel = TrainersViewModel()
-    private val trainingsViewModel = TrainingsViewModel()
-    private val mainViewModel = MainViewModel()
-    private val authViewModel = AuthViewModel()
+    @Inject lateinit var trainingsRepository: TrainingsRepository
+    private val trainersViewModel: TrainersViewModel by viewModels()
+    private val trainingsViewModel: TrainingsViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        trainersViewModel.trainersRepository = trainersRepository
-        trainingsViewModel.trainersRepository = trainersRepository
+
+        val workRequest = OneTimeWorkRequestBuilder<ApiSyncWorker>()
+            .setInitialDelay(Duration.ofSeconds(10))
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR,
+                Duration.ofSeconds(15)
+            )
+            .build()
+
+        WorkManager.getInstance(applicationContext).enqueue(workRequest)
+
         setContent {
             setTheme(R.style.Theme_TrainMeApp)
             TrainMeAppTheme {
@@ -38,7 +53,7 @@ class MainActivity : ComponentActivity() {
                     Navigation(
                         trainersViewModel = trainersViewModel,
                         trainingsViewModel = trainingsViewModel,
-                        mainViewModel = mainViewModel,
+                        userViewModel = userViewModel,
                         authViewModel = authViewModel
                     )
                 }

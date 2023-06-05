@@ -61,4 +61,8 @@
     <string name="login">Login</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="rationale">App doesn\'t work without notification permission</string>
+    <string name="permission_request">Notification permission request</string>
+    <string name="ok">OK</string>
+    <string name="title">Notification</string>
 </resources>

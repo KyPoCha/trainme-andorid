@@ -47,13 +47,13 @@ fun TrainersScreen(navController: NavController, trainersViewModel: TrainersView
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            TrainersGrid(trainers = trainers) { navController.navigate(Screen.TrainingsScreen.route) }
+            TrainersGrid(trainers = trainers, trainersViewModel = trainersViewModel) { navController.navigate(Screen.TrainingsScreen.route) }
         }
     }
 }
 
 @Composable
-fun TrainersGrid(trainers: List<Trainer>, onClick: () -> Unit) {
+fun TrainersGrid(trainers: List<Trainer>,trainersViewModel: TrainersViewModel, onClick: () -> Unit, ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(1),
         modifier = Modifier
@@ -62,14 +62,14 @@ fun TrainersGrid(trainers: List<Trainer>, onClick: () -> Unit) {
         contentPadding = PaddingValues(8.dp,2.dp)
     ) {
         items(trainers) { trainer->
-            TrainerGridItem(trainer = trainer, onClick = onClick)
+            TrainerGridItem(trainer = trainer, trainersViewModel = trainersViewModel ,onClick = onClick)
         }
     }
 }
 
 
 @Composable
-fun TrainerGridItem(trainer: Trainer, onClick: () -> Unit) {
+fun TrainerGridItem(trainer: Trainer, trainersViewModel: TrainersViewModel, onClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.padding(10.dp,5.dp,10.dp,10.dp),
@@ -84,7 +84,7 @@ fun TrainerGridItem(trainer: Trainer, onClick: () -> Unit) {
         Column(modifier = Modifier.clickable(onClick = {  })) {
             trainer.image?.let {
                 Image(
-                    bitmap = it.asImageBitmap(),
+                    bitmap = trainersViewModel.decodeImageBytes(trainer.image!!).asImageBitmap(),
                     contentDescription = null, // decorative
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

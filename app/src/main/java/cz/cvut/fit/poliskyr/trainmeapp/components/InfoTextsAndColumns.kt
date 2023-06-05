@@ -110,7 +110,7 @@ fun InfoColumn(){
         horizontalArrangement = Arrangement.Center
     ){
         Column(
-            modifier = Modifier.padding(15.dp),
+            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp, start = 12.dp, end = 0.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -121,7 +121,7 @@ fun InfoColumn(){
             InfoMediumText(text = stringResource(id = R.string.praha))
         }
         Column(
-            modifier = Modifier.padding(15.dp),
+            modifier = Modifier.padding(start = 26.dp, top = 16.dp, end = 16.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
