@@ -1,9 +1,13 @@
 package cz.cvut.fit.poliskyr.trainmeapp.data.source
 
+import android.util.Log
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import cz.cvut.fit.poliskyr.trainmeapp.model.Trainer
 import cz.cvut.fit.poliskyr.trainmeapp.networking.ApiInterceptor
 import cz.cvut.fit.poliskyr.trainmeapp.networking.api.TrainersApiDescription
+import cz.cvut.fit.poliskyr.trainmeapp.networking.exception.BadGatewayException
+import cz.cvut.fit.poliskyr.trainmeapp.networking.exception.ForbiddenException
+import cz.cvut.fit.poliskyr.trainmeapp.networking.exception.UnauthorizedException
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -12,8 +16,9 @@ import retrofit2.Retrofit
 import javax.inject.Inject
 
 //const val LOCAL_HOST = "http://10.0.2.2:8080/api/"
-const val LOCAL_HOST = "http://192.168.0.227:8080/api/"
+//const val LOCAL_HOST = "http://192.168.0.227:8080/api/"
 //const val LOCAL_HOST = "http://192.168.1.106:8080/api/"
+const val LOCAL_HOST = "https://server-app-production-017e.up.railway.app/api/"
 
 class TrainerDataSource @Inject constructor(private val apiInterceptor: ApiInterceptor) {
     private val json = Json {
@@ -38,10 +43,10 @@ class TrainerDataSource @Inject constructor(private val apiInterceptor: ApiInter
     }
 
     suspend fun getTrainers() : List<Trainer> {
-        trainers.clear()
-        val response = apiDescription.getAllTrainers()
-        response.forEach {
-            trainerResponse ->
+        try {
+            trainers.clear()
+            val response = apiDescription.getAllTrainers()
+            response.forEach { trainerResponse ->
                 trainers.add(
                     Trainer(
                         trainerResponse.id,
@@ -55,15 +60,21 @@ class TrainerDataSource @Inject constructor(private val apiInterceptor: ApiInter
                         null
                     )
                 )
+            }
+            return trainers
+        }
+        catch (e: ForbiddenException) {
+            Log.e("API", "Forbidden")
+        } catch (e: UnauthorizedException) {
+            Log.e("API", "Unauthorized")
+        } catch (e: BadGatewayException) {
+            Log.e("API", "BadGateway")
+        } catch (e: Exception) {
+            Log.e("API", "ERROR")
         }
         return trainers
     }
 
     var trainers = mutableListOf<Trainer>()
 
-    fun setAllTrainers(mutableList: List<Trainer>) {
-        this.trainers = mutableList as MutableList<Trainer>
-    }
-
-    fun getAllTrainers(): List<Trainer> = trainers
 }
