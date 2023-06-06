@@ -21,7 +21,7 @@ import cz.cvut.fit.poliskyr.trainmeapp.components.*
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MainScreen(navController: NavController, openDrawer: () -> Unit) {
+fun MainScreen(openDrawer: () -> Unit) {
     val listOfImages = listOf(
         R.drawable._gym2,
         R.drawable._gym3,

@@ -1,5 +1,6 @@
 package cz.cvut.fit.poliskyr.trainmeapp.util
 
+import cz.cvut.fit.poliskyr.trainmeapp.model.Training
 import java.util.regex.Pattern
 
 class Validator {
@@ -38,4 +39,13 @@ class Validator {
         return password == confirmPassword
     }
 
+    internal object Compare {
+        fun min(a: Training, b: Training): Training {
+            return if (a.timeFrom < b.timeFrom) a else b
+        }
+
+        fun max(a: Training, b: Training): Training {
+            return if (a.timeFrom > b.timeFrom) a else b
+        }
+    }
 }

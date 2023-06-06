@@ -4,21 +4,17 @@ import androidx.compose.foundation.background
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.rememberDrawerState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import cz.cvut.fit.poliskyr.trainmeapp.components.Drawer
 import cz.cvut.fit.poliskyr.trainmeapp.presentation.*
 import cz.cvut.fit.poliskyr.trainmeapp.screen.*
 import cz.cvut.fit.poliskyr.trainmeapp.ui.theme.Background
-import cz.cvut.fit.poliskyr.trainmeapp.ui.theme.Warning
 import kotlinx.coroutines.launch
 
 @Composable
@@ -57,7 +53,6 @@ fun Navigation(
         ) {
             NavHost(
                 navController = navController,
-//                startDestination = Screen.MainScreen.route,
                 startDestination = Screen.AuthScreen.route
             ) {
                 composable(route = Screen.AuthScreen.route) {
@@ -68,7 +63,6 @@ fun Navigation(
                 }
                 composable(route = Screen.MainScreen.route) {
                     MainScreen(
-                        navController = navController,
                         openDrawer = {
                             openDrawer()
                         }
@@ -85,7 +79,6 @@ fun Navigation(
                 }
                 composable(route = Screen.TrainingsScreen.route) {
                     TrainingsScreen(
-                        navController = navController,
                         trainingsViewModel = trainingsViewModel,
                         openDrawer = {
                             openDrawer()

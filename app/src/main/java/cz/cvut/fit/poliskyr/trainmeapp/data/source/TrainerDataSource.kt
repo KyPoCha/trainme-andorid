@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 //const val LOCAL_HOST = "http://10.0.2.2:8080/api/"
 const val LOCAL_HOST = "http://192.168.0.227:8080/api/"
+//const val LOCAL_HOST = "http://192.168.1.106:8080/api/"
 
 class TrainerDataSource @Inject constructor(private val apiInterceptor: ApiInterceptor) {
     private val json = Json {

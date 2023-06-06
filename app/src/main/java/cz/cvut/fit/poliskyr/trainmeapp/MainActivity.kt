@@ -1,15 +1,18 @@
 package cz.cvut.fit.poliskyr.trainmeapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.work.BackoffPolicy
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import cz.cvut.fit.poliskyr.trainmeapp.data.db.repository.TrainersRepository
 import cz.cvut.fit.poliskyr.trainmeapp.data.db.repository.TrainingsRepository
@@ -18,6 +21,7 @@ import cz.cvut.fit.poliskyr.trainmeapp.presentation.*
 import cz.cvut.fit.poliskyr.trainmeapp.ui.theme.TrainMeAppTheme
 import cz.cvut.fit.poliskyr.trainmeapp.workers.data.ApiSyncWorker
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import java.time.Duration
 import javax.inject.Inject
 
@@ -33,7 +37,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val workRequest = OneTimeWorkRequestBuilder<ApiSyncWorker>()
+        val repeatInterval = Duration.ofMinutes(5)
+        val workRequest = PeriodicWorkRequestBuilder<ApiSyncWorker>(repeatInterval)
             .setInitialDelay(Duration.ofSeconds(10))
             .setBackoffCriteria(
                 BackoffPolicy.LINEAR,
@@ -45,6 +50,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             setTheme(R.style.Theme_TrainMeApp)
+            LaunchedEffect(Unit){
+                while (true){
+                    trainingsViewModel.checkOnTime()
+                    delay(60000)
+                }
+            }
+
             TrainMeAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

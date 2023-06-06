@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.icu.text.SimpleDateFormat
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,22 +15,28 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cz.cvut.fit.poliskyr.trainmeapp.R
 import cz.cvut.fit.poliskyr.trainmeapp.data.db.repository.TrainersRepository
+import cz.cvut.fit.poliskyr.trainmeapp.data.db.repository.TrainingsRepository
 import cz.cvut.fit.poliskyr.trainmeapp.data.source.TrainingDataSource
 import cz.cvut.fit.poliskyr.trainmeapp.model.Trainer
 import cz.cvut.fit.poliskyr.trainmeapp.model.Training
 import cz.cvut.fit.poliskyr.trainmeapp.networking.payload.request.TrainingRequest
 import cz.cvut.fit.poliskyr.trainmeapp.ui.theme.Danger
 import cz.cvut.fit.poliskyr.trainmeapp.ui.theme.Success
+import cz.cvut.fit.poliskyr.trainmeapp.util.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import cz.cvut.fit.poliskyr.trainmeapp.R
-import cz.cvut.fit.poliskyr.trainmeapp.data.db.repository.TrainingsRepository
-import kotlinx.coroutines.flow.Flow
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -185,6 +192,50 @@ class TrainingsViewModel @Inject constructor(
                 return
             }
             notify(notificationId, builder.build())
+        }
+    }
+
+    private fun createNearestTrainingNotification(diff: Long, nextTime: Date) {
+        val now = LocalDateTime.now()
+        val date = Date.from(now.atZone(ZoneId.systemDefault()).toInstant())
+        val setTimeOut = nextTime.time - date.time
+        val notificationId = 3
+        val builder = NotificationCompat.Builder(appContext, "CHANNEL_ID")
+            .setPriority(1)
+            .setSmallIcon(R.drawable.logo)
+            .setContentTitle("The Nearest Training")
+            .setStyle(NotificationCompat.InboxStyle()
+                .addLine("Your next training")
+                .addLine("Will begin in $diff minutes"))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setOngoing(true)
+            .setTimeoutAfter(setTimeOut)
+        with(NotificationManagerCompat.from(appContext)) {
+            if (ActivityCompat.checkSelfPermission(
+                    appContext,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+            notify(notificationId, builder.build())
+        }
+    }
+
+    fun checkOnTime() {
+        val now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        val nowFormatted = now.split(" ")[0] + "T" +now.split(" ")[1]
+        val nextTrainings = trainings.value.filter { it.timeFrom >= nowFormatted }
+        if(nextTrainings.isNotEmpty()){
+            val nextTraining = nextTrainings.reduce(Validator.Compare::min)
+            val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+            val date1: Date = format.parse(nowFormatted)
+            val date2: Date = format.parse(nextTraining.timeFrom)
+            val diff = date2.time - date1.time
+            val diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(diff)
+            if(diffInMinutes in 1..14){
+                createNearestTrainingNotification(diffInMinutes, date2)
+            }
         }
     }
 }

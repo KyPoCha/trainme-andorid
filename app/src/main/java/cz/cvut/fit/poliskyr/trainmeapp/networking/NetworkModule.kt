@@ -2,7 +2,6 @@ package cz.cvut.fit.poliskyr.trainmeapp.networking
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import cz.cvut.fit.poliskyr.trainmeapp.data.source.*
 import cz.cvut.fit.poliskyr.trainmeapp.util.AppSharedPreferences
 import cz.cvut.fit.poliskyr.trainmeapp.util.SessionManager
@@ -11,9 +10,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module

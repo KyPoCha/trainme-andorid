@@ -6,9 +6,6 @@ import android.widget.DatePicker
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.SnackbarHostState
@@ -42,7 +39,7 @@ import cz.cvut.fit.poliskyr.trainmeapp.screen.EmptyScreen as EmptyScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TrainingsScreen(navController: NavController, openDrawer: () -> Unit, trainingsViewModel: TrainingsViewModel){
+fun TrainingsScreen(openDrawer: () -> Unit, trainingsViewModel: TrainingsViewModel){
     val trainers by trainingsViewModel.trainers.collectAsState(mutableListOf())
     val trainings by trainingsViewModel.trainings.collectAsState()
 
