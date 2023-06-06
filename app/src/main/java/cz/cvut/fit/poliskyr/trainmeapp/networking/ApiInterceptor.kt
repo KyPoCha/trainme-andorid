@@ -1,6 +1,9 @@
 package cz.cvut.fit.poliskyr.trainmeapp.networking
 
 import android.util.Log
+import cz.cvut.fit.poliskyr.trainmeapp.networking.exception.BadGatewayException
+import cz.cvut.fit.poliskyr.trainmeapp.networking.exception.ForbiddenException
+import cz.cvut.fit.poliskyr.trainmeapp.networking.exception.UnauthorizedException
 import cz.cvut.fit.poliskyr.trainmeapp.util.SessionManager
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -18,10 +21,18 @@ class ApiInterceptor @Inject constructor(
 
         val response = chain.proceed(
             newRequestWithAccessToken(
-                "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzMyIsImlkIjoiMzMiLCJlbWFpbCI6ImtpcmlsbHBvbGlzaGNodWswMkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImtpcmlsbHBvbGlzaGNodWswMkBnbWFpbC5jb20iLCJpYXQiOjE2ODU5ODk1MzAsImV4cCI6MjI4NTk4OTUzMH0.TWFOKcJDUKKuDqZeZQsHbgF_5Znhg8mhJ76sQZzDhQT2BF_w7nEJljBWVLBU5sKrZLAem_svg-EyiH7MfWdqyw",
+                "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWQiOiIxIiwiZW1haWwiOiJhZG1pbkBtYWlsLmlvIiwidXNlcm5hbWUiOiJhZG1pbkBtYWlsLmlvIiwiaWF0IjoxNjg2MDgzNzk3LCJleHAiOjIyODYwODM3OTd9.e1_m1d6VTVVCOFQLesLiOfAqTXiWNKhIUB4cCV0PQ5W6obez0a46KmsYw0bHZ62oXh1J0HPh7oVu7h9SdL59AA",
                 request
             )
         )
+
+        if (response.code == 403) {
+            throw ForbiddenException()
+        } else if (response.code == 401) {
+            throw UnauthorizedException()
+        } else if (response.code == 502) {
+            throw BadGatewayException()
+        }
 
         if (response.code == HttpURLConnection.HTTP_UNAUTHORIZED) {
             val newAccessToken = sessionManager.getAccessToken()
