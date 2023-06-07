@@ -84,7 +84,7 @@ fun TrainerGridItem(trainer: Trainer, trainersViewModel: TrainersViewModel, onCl
         Column(modifier = Modifier.clickable(onClick = {  })) {
             trainer.image?.let {
                 Image(
-                    bitmap = trainersViewModel.decodeImageBytes(trainer.image!!).asImageBitmap(),
+                    bitmap = trainersViewModel.decodeImageBytes(trainer.image ?: "").asImageBitmap(),
                     contentDescription = null, // decorative
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

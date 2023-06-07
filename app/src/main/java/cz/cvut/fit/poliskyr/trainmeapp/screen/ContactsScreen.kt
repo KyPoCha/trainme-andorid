@@ -1,7 +1,9 @@
 package cz.cvut.fit.poliskyr.trainmeapp.screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -42,14 +44,16 @@ fun ContactsScreen(navController: NavController){
                 isTrainingScreen = false
             )
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                     Column(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(10.dp),
+                            .padding(10.dp)
+                            .verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -131,7 +135,8 @@ fun ContactsScreen(navController: NavController){
                     Column(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(10.dp),
+                            .padding(10.dp)
+                            .verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {

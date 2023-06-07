@@ -2,6 +2,8 @@ package cz.cvut.fit.poliskyr.trainmeapp
 
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
+import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -14,6 +16,9 @@ import androidx.work.BackoffPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import cz.cvut.fit.poliskyr.trainmeapp.data.db.repository.TrainersRepository
 import cz.cvut.fit.poliskyr.trainmeapp.data.db.repository.TrainingsRepository
 import cz.cvut.fit.poliskyr.trainmeapp.navigation.Navigation
@@ -37,6 +42,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Firebase.crashlytics.setCrashlyticsCollectionEnabled(true)
+        FirebaseCrashlytics.getInstance().setCustomKey("str_key", "API_ERRORS")
+
+
         val repeatInterval = Duration.ofMinutes(5)
         val workRequest = PeriodicWorkRequestBuilder<ApiSyncWorker>(repeatInterval)
             .setInitialDelay(Duration.ofSeconds(10))
@@ -56,7 +65,6 @@ class MainActivity : ComponentActivity() {
                     delay(60000)
                 }
             }
-
             TrainMeAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

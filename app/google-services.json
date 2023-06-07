@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "841139783464",
+    "project_id": "bi-and-trainme",
+    "storage_bucket": "bi-and-trainme.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841139783464:android:7e953f1cf5777e644eb21d",
+        "android_client_info": {
+          "package_name": "cz.cvut.fit.poliskyr.trainmeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "841139783464-djtg9ia8ddov7t5bl194f3ngc0hv4d2e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7GF-HKMLsL-4dJc1WDtWMpCAoe99zg00"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "841139783464-djtg9ia8ddov7t5bl194f3ngc0hv4d2e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,6 +2,9 @@ package cz.cvut.fit.poliskyr.trainmeapp.data.source
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import cz.cvut.fit.poliskyr.trainmeapp.model.User
 import cz.cvut.fit.poliskyr.trainmeapp.networking.ApiInterceptor
@@ -54,12 +57,20 @@ class UserDataSource @Inject constructor(private val apiInterceptor: ApiIntercep
         }
         catch (e: ForbiddenException) {
             Log.e("API", "Forbidden")
+            Firebase.crashlytics.recordException(e)
+            FirebaseCrashlytics.getInstance().log("API: Forbidden request from User service")
         } catch (e: UnauthorizedException) {
             Log.e("API", "Unauthorized")
+            Firebase.crashlytics.recordException(e)
+            FirebaseCrashlytics.getInstance().log("API: Unauthorized request from User service")
         } catch (e: BadGatewayException) {
             Log.e("API", "BadGateway")
+            Firebase.crashlytics.recordException(e)
+            FirebaseCrashlytics.getInstance().log("API: BagGateWay request from User service")
         } catch (e: Exception) {
             Log.e("API", "ERROR")
+            Firebase.crashlytics.recordException(e)
+            FirebaseCrashlytics.getInstance().log("Error: from User service")
         }
         return user.value
     }

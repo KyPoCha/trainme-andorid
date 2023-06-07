@@ -6,6 +6,9 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import cz.cvut.fit.poliskyr.trainmeapp.data.db.repository.TrainersRepository
 import cz.cvut.fit.poliskyr.trainmeapp.data.source.TrainerDataSource
 import dagger.assisted.Assisted
@@ -31,10 +34,13 @@ class ApiSyncWorker @AssistedInject constructor(
             } else {
                 Log.e("WORK MANAGER", "The app cannot to get sync!")
                 Result.failure()
+                throw Exception("The app cannot to get sync with api!")
             }
         }
         catch (e: Exception){
             Log.e("WORK MANAGER", e.message!!)
+            Firebase.crashlytics.recordException(e)
+            FirebaseCrashlytics.getInstance().log("Error: from WorkerManager")
             Result.retry()
         }
         return Result.success()

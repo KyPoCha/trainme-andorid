@@ -2,7 +2,9 @@ package cz.cvut.fit.poliskyr.trainmeapp.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,7 +32,8 @@ fun Drawer(
         modifier
             .fillMaxSize()
             .fillMaxHeight()
-            .padding(start = 24.dp, top = 24.dp),
+            .padding(start = 24.dp, top = 24.dp)
+            .verticalScroll(rememberScrollState()),
     ) {
         HeaderBar(username = user.username)
         screens.forEach { screen ->
