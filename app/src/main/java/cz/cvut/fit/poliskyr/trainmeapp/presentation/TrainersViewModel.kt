@@ -28,6 +28,7 @@ class TrainersViewModel @Inject constructor(
             _trainers.value = trainerDataSource.getTrainers()
             _trainers.value.forEach{
                 trainersRepository.insertTrainer(it)
+                loadImageToTrainer(it.id)
             }
         }
     }

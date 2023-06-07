@@ -5,9 +5,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -18,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -54,22 +54,25 @@ fun TrainersScreen(navController: NavController, trainersViewModel: TrainersView
 
 @Composable
 fun TrainersGrid(trainers: List<Trainer>,trainersViewModel: TrainersViewModel, onClick: () -> Unit, ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(1),
+    LazyColumn(
         modifier = Modifier
             .background(Color.Transparent)
             .fillMaxWidth(),
         contentPadding = PaddingValues(8.dp,2.dp)
     ) {
         items(trainers) { trainer->
-            TrainerGridItem(trainer = trainer, trainersViewModel = trainersViewModel ,onClick = onClick)
+            TrainerGridItem(trainer = trainer, image = trainersViewModel.decodeImageBytes(trainer.image!!).asImageBitmap() ,onClick = onClick)
         }
     }
 }
 
 
 @Composable
-fun TrainerGridItem(trainer: Trainer, trainersViewModel: TrainersViewModel, onClick: () -> Unit) {
+fun TrainerGridItem(
+    trainer: Trainer,
+    onClick: () -> Unit,
+    image: ImageBitmap
+) {
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.padding(10.dp,5.dp,10.dp,10.dp),
@@ -84,7 +87,7 @@ fun TrainerGridItem(trainer: Trainer, trainersViewModel: TrainersViewModel, onCl
         Column(modifier = Modifier.clickable(onClick = {  })) {
             trainer.image?.let {
                 Image(
-                    bitmap = trainersViewModel.decodeImageBytes(trainer.image ?: "").asImageBitmap(),
+                    bitmap = image,
                     contentDescription = null, // decorative
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
