@@ -15,7 +15,7 @@ Díky implementaci této aplikace si mohou zákazníci klubu snadno a rychle vyb
 - Android Jetpack Compose: Android Jetpack Compose je moderní sada nástrojů uživatelského rozhraní pro vytváření nativních aplikací pro Android. 
   Nabízí deklarativní způsob definování komponent uživatelského rozhraní a zjednodušuje vývoj interaktivních a responzivních uživatelských rozhraní.
   <br></br>
-- 
+
 - Material3 UI: Material3 UI je systém návrhu pro aplikace pro Android, který se řídí pokyny Material Designu. 
   Poskytuje sadu předpřipravených komponent a stylů pro vytváření vizuálně přitažlivých a konzistentních uživatelských rozhraní.
   <br></br>
