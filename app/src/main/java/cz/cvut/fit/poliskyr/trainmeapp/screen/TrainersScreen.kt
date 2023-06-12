@@ -10,14 +10,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,10 +26,17 @@ import cz.cvut.fit.poliskyr.trainmeapp.model.Trainer
 import cz.cvut.fit.poliskyr.trainmeapp.navigation.Screen
 import cz.cvut.fit.poliskyr.trainmeapp.presentation.TrainersViewModel
 import cz.cvut.fit.poliskyr.trainmeapp.ui.theme.*
+import kotlinx.coroutines.delay
 
 @Composable
 fun TrainersScreen(navController: NavController, trainersViewModel: TrainersViewModel, openDrawer: () -> Unit){
     val trainers by trainersViewModel.trainers.collectAsState()
+    val shouldRender = remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        trainersViewModel.load()
+        delay(1200)
+        shouldRender.value = true
+    }
     Column(modifier = Modifier.fillMaxSize()) {
         TopBar(
             title = stringResource(id = R.string.trainers),
@@ -40,17 +44,23 @@ fun TrainersScreen(navController: NavController, trainersViewModel: TrainersView
             onButtonClicked = { openDrawer() },
             isTrainingScreen = false
         )
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            TrainersGrid(trainers = trainers, trainersViewModel = trainersViewModel) { navController.navigate(Screen.TrainingsScreen.route) }
+        if(shouldRender.value) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TrainersGrid(
+                    trainers = trainers,
+                    trainersImages = trainersViewModel.trainerImages
+                ) { navController.navigate(Screen.TrainingsScreen.route) }
+            }
         }
     }
 }
 
 @Composable
-fun TrainersGrid(trainers: List<Trainer>,trainersViewModel: TrainersViewModel, onClick: () -> Unit, ) {
+fun TrainersGrid(trainers: List<Trainer>,trainersImages: Map<Int, ImageBitmap>, onClick: () -> Unit, ) {
     LazyColumn(
         modifier = Modifier
             .background(Color.Transparent)
@@ -58,7 +68,10 @@ fun TrainersGrid(trainers: List<Trainer>,trainersViewModel: TrainersViewModel, o
         contentPadding = PaddingValues(8.dp,2.dp)
     ) {
         items(trainers) { trainer->
-            TrainerGridItem(trainer = trainer, image = trainersViewModel.decodeImageBytes(trainer.image!!).asImageBitmap() ,onClick = onClick)
+            val image = trainersImages[trainer.id]
+            if (image != null) {
+                TrainerGridItem(trainer = trainer, image = image ,onClick = onClick)
+            }
         }
     }
 }
