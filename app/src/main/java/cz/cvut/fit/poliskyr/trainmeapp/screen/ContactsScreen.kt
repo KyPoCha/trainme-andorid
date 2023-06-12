@@ -3,6 +3,8 @@ package cz.cvut.fit.poliskyr.trainmeapp.screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -10,9 +12,12 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cz.cvut.fit.poliskyr.trainmeapp.R
@@ -25,6 +30,7 @@ import cz.cvut.fit.poliskyr.trainmeapp.ui.theme.Warning
 import cz.cvut.fit.poliskyr.trainmeapp.util.Validator
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ContactsScreen(navController: NavController){
     var textName by remember { mutableStateOf("") }
@@ -33,10 +39,11 @@ fun ContactsScreen(navController: NavController){
     val scope = rememberCoroutineScope()
     val emailSuccess = stringResource(id = R.string.send_email_success)
     val emailFailure = stringResource(id = R.string.send_email_failure)
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingVal ->
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(it)) {
+            .padding(paddingVal)) {
             TopBar(
                 title = stringResource(id = R.string.contacts),
                 buttonIcon = Icons.Filled.ArrowBack,
@@ -62,6 +69,9 @@ fun ContactsScreen(navController: NavController){
                                 modifier = Modifier.fillMaxWidth(),
                                 value = textName,
                                 onValueChange = { textName = it },
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {keyboardController?.hide()}),
                                 placeholder = {
                                     Text(
                                         modifier = Modifier,
@@ -85,6 +95,9 @@ fun ContactsScreen(navController: NavController){
                                 modifier = Modifier.fillMaxWidth(),
                                 value = textEmail,
                                 onValueChange = { textEmail = it },
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {keyboardController?.hide()}),
                                 placeholder = {
                                     Text(
                                         modifier = Modifier,

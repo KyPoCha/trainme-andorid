@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -17,12 +18,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -42,7 +46,7 @@ import cz.cvut.fit.poliskyr.trainmeapp.util.Validator
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun AuthScreen(navController: NavController, authViewModel: AuthViewModel) {
     var openDialog by remember {
@@ -50,6 +54,7 @@ fun AuthScreen(navController: NavController, authViewModel: AuthViewModel) {
     }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val keyboardController = LocalSoftwareKeyboardController.current
     Scaffold(snackbarHost = {
         androidx.compose.material.SnackbarHost(
             snackbarHostState
@@ -123,6 +128,9 @@ fun AuthScreen(navController: NavController, authViewModel: AuthViewModel) {
             TextField(
                 label = { Text(text = stringResource(id = R.string.username)) },
                 value = username.value,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {keyboardController?.hide()}),
                 onValueChange = { usernameVal -> username.value = usernameVal },
                 colors = androidx.compose.material3.TextFieldDefaults.textFieldColors(
                         cursorColor = Warning.copy(alpha = ContentAlpha.medium),
@@ -136,7 +144,9 @@ fun AuthScreen(navController: NavController, authViewModel: AuthViewModel) {
                 label = { Text(text = stringResource(id = R.string.password)) },
                 value = password.value,
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {keyboardController?.hide()}),
                 onValueChange = { passwordVal -> password.value = passwordVal },
                 colors = androidx.compose.material3.TextFieldDefaults.textFieldColors(
                     cursorColor = Warning.copy(alpha = ContentAlpha.medium),
@@ -175,6 +185,7 @@ fun AuthScreen(navController: NavController, authViewModel: AuthViewModel) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignUpDialogWindow(
     onDismiss: () -> Unit,
@@ -182,7 +193,7 @@ fun SignUpDialogWindow(
     onErrorEmail: () -> Job,
     onErrorPassword: () -> Job,
     onErrorEmpty: () -> Job,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
 ){
     var textUsername by remember { mutableStateOf("") }
     var textEmail by remember { mutableStateOf("") }
@@ -192,6 +203,8 @@ fun SignUpDialogWindow(
     var textConfirmPassword by remember { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     var passwordConfirmVisible by rememberSaveable { mutableStateOf(false) }
+
+    val keyboardController = LocalSoftwareKeyboardController.current
     Dialog(
         onDismissRequest = {
             onDismiss()
@@ -221,6 +234,9 @@ fun SignUpDialogWindow(
                         .padding(top = 20.dp, start = 36.dp, end = 36.dp, bottom = 8.dp),
                     value = textUsername,
                     onValueChange = { textUsername = it },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {keyboardController?.hide()}),
                     placeholder = {
                         Text(
                             modifier = Modifier,
@@ -247,6 +263,9 @@ fun SignUpDialogWindow(
                         .padding(start = 36.dp, end = 36.dp),
                     value = textEmail,
                     onValueChange = { textEmail = it },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {keyboardController?.hide()}),
                     placeholder = {
                         Text(
                             modifier = Modifier,
@@ -273,6 +292,9 @@ fun SignUpDialogWindow(
                         .padding(start = 36.dp, end = 36.dp),
                     value = textFirstName,
                     onValueChange = { textFirstName = it },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {keyboardController?.hide()}),
                     placeholder = {
                         Text(
                             modifier = Modifier,
@@ -299,6 +321,9 @@ fun SignUpDialogWindow(
                         .padding(start = 36.dp, end = 36.dp),
                     value = textLastName,
                     onValueChange = { textLastName = it },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {keyboardController?.hide()}),
                     placeholder = {
                         Text(
                             modifier = Modifier,
@@ -343,7 +368,9 @@ fun SignUpDialogWindow(
                         focusedIndicatorColor = Warning
                     ),
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {keyboardController?.hide()}),
                     trailingIcon = {
                         val image = if (passwordVisible)
                             painterResource(id = R.drawable.visibility)
@@ -383,7 +410,9 @@ fun SignUpDialogWindow(
                         focusedIndicatorColor = Warning
                     ),
                     visualTransformation = if (passwordConfirmVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {keyboardController?.hide()}),
                     trailingIcon = {
                         val image = if (passwordConfirmVisible)
                             painterResource(id = R.drawable.visibility)
