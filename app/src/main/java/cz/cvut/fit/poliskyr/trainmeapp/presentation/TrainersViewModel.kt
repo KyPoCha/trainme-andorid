@@ -24,11 +24,16 @@ class TrainersViewModel @Inject constructor(
     val trainers: StateFlow<List<Trainer>> = _trainers
 
     init {
+        load()
+        trainers.value.forEach { loadImageToTrainer(it.id) }
+    }
+
+    fun load(){
         viewModelScope.launch {
             _trainers.value = trainerDataSource.getTrainers()
             _trainers.value.forEach{
-                trainersRepository.insertTrainer(it)
                 loadImageToTrainer(it.id)
+                trainersRepository.insertTrainer(it)
             }
         }
     }

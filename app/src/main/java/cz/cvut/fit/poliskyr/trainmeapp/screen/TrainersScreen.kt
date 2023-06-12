@@ -1,6 +1,5 @@
 package cz.cvut.fit.poliskyr.trainmeapp.screen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,8 +33,6 @@ import cz.cvut.fit.poliskyr.trainmeapp.ui.theme.*
 @Composable
 fun TrainersScreen(navController: NavController, trainersViewModel: TrainersViewModel, openDrawer: () -> Unit){
     val trainers by trainersViewModel.trainers.collectAsState()
-    trainers.forEach { trainersViewModel.loadImageToTrainer(trainerId = it.id) }
-    Log.d("API CALL: ", trainers.toString())
     Column(modifier = Modifier.fillMaxSize()) {
         TopBar(
             title = stringResource(id = R.string.trainers),
@@ -88,7 +85,7 @@ fun TrainerGridItem(
             trainer.image?.let {
                 Image(
                     bitmap = image,
-                    contentDescription = null, // decorative
+                    contentDescription = "API IMAGE TRAINER $it",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()

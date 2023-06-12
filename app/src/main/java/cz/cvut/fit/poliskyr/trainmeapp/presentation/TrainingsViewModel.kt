@@ -56,8 +56,12 @@ class TrainingsViewModel @Inject constructor(
     val trainings: StateFlow<List<Training>> = _trainings
 
     init {
+        createNotificationChannel(context = appContext)
+        load()
+    }
+
+    fun load(){
         viewModelScope.launch {
-            createNotificationChannel(context = appContext)
             _trainers.value = trainersRepository.getTrainers()
             _trainings.value = trainingDataSource.getTrainings()
             if(_trainings.value.isNotEmpty()){
@@ -74,7 +78,7 @@ class TrainingsViewModel @Inject constructor(
             trainingDataSource.postTraining(trainingRequest)
             createTrainingAddNotification(trainingRequest)
             screenState.value = true
-            _trainings.value = trainingDataSource.getTrainings()
+            load()
         }
     }
 
@@ -82,7 +86,7 @@ class TrainingsViewModel @Inject constructor(
         viewModelScope.launch {
             trainingDataSource.deleteTraining(trainingId = trainingId)
             trainingsRepository.deleteTraining(trainingId = trainingId)
-            _trainings.value = trainingDataSource.getTrainings()
+            load()
             if(_trainings.value.isEmpty()){
                 screenState.value = false
             }
@@ -96,10 +100,11 @@ class TrainingsViewModel @Inject constructor(
                 "Training was delete"
             )
         }
-        this.delete(trainingId)
+        delete(trainingId)
         if(_trainings.value.isEmpty()){
             screenState.value = true
         }
+        load()
     }
 
     fun convertTimeToApi(
@@ -156,7 +161,7 @@ class TrainingsViewModel @Inject constructor(
             onClickFailure()
         }
         else {
-            this.post(TrainingRequest(trainer.id, "404",timeFrom, timeTo))
+            post(TrainingRequest(trainer.id, "404",timeFrom, timeTo))
             onClickSuccess()
         }
     }

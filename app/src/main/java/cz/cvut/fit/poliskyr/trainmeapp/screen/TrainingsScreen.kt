@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import cz.cvut.fit.poliskyr.trainmeapp.R
 import cz.cvut.fit.poliskyr.trainmeapp.components.DropDownMenu
 import cz.cvut.fit.poliskyr.trainmeapp.components.TopBar
@@ -41,7 +40,11 @@ import cz.cvut.fit.poliskyr.trainmeapp.screen.EmptyScreen as EmptyScreen
 @Composable
 fun TrainingsScreen(openDrawer: () -> Unit, trainingsViewModel: TrainingsViewModel){
     val trainers by trainingsViewModel.trainers.collectAsState(mutableListOf())
-    val trainings by trainingsViewModel.trainings.collectAsState()
+    val trainings by trainingsViewModel.trainings.collectAsState(emptyList())
+
+    LaunchedEffect(Unit){
+        trainingsViewModel.load()
+    }
 
     val screenState by trainingsViewModel.screenState.collectAsState()
 
@@ -220,28 +223,32 @@ fun TableTrainings(
     snackbarHostState: SnackbarHostState,
     screenState: Boolean
 ){
-    LazyColumn(
-        modifier = Modifier
-            .background(Color.Transparent)
-            .fillMaxWidth(),
-        contentPadding = PaddingValues(8.dp,2.dp)
-    ) {
-        if(screenState) {
-            items(trainings) { training ->
-                TrainingCard(training = training) {
-                    trainingsViewModel.onDelete(
-                        trainingId = training.id,
-                        scope = scope,
-                        snackbarHostState = snackbarHostState
-                    )
+    if(trainings.isNotEmpty()) {
+        LazyColumn(
+            modifier = Modifier
+                .background(Color.Transparent)
+                .fillMaxWidth(),
+            contentPadding = PaddingValues(8.dp, 2.dp)
+        ) {
+            if (screenState) {
+                items(trainings) { training ->
+                    TrainingCard(training = training) {
+                        trainingsViewModel.onDelete(
+                            trainingId = training.id,
+                            scope = scope,
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
+                }
+            } else {
+                item() {
+                    EmptyScreen(modifier = Modifier.padding(16.dp))
                 }
             }
         }
-        else{
-            item(){
-                EmptyScreen(modifier = Modifier.padding(16.dp))
-            }
-        }
+    }
+    else{
+        EmptyScreen(modifier = Modifier.padding(16.dp))
     }
 }
 
